@@ -1,0 +1,135 @@
+Problem statement :
+  
+Given an m x n integer matrix matrix, if an element is 0, set its entire row and column to 0's.
+You must do it in place.
+
+Example 1:
+Input: matrix = [[1, 1, 1], [1, 0, 1], [1, 1, 1]]
+Output: [[1,0,1],[0,0,0],[1,0,1]]
+
+Brute Approach
+Using an Extra List to Track Zero Positions :
+  Find all positions in the matrix where 0 appears and store their indexes (row, col) in a list.
+  Then, iterate through the stored indexes and set the corresponding rows and columns to 0.
+
+Java Code -
+
+  class Solution {
+   public void setZeroes(int[][] matrix) {
+       List<int[]> positions = new ArrayList<>();
+       int n = matrix.length;
+       int m = matrix[0].length;
+       // Store positions of zeros
+       for (int i = 0; i < n; i++) {
+           for (int j = 0; j < m; j++) {
+               if (matrix[i][j] == 0) {
+                   positions.add(new int[]{i, j});
+               }
+           }
+       }
+       // Set corresponding rows and columns to zero
+       for (int[] pos : positions) {
+           int x = pos[0], y = pos[1];
+           // Set row to zero
+           for (int i = 0; i < m; i++) {
+               matrix[x][i] = 0;
+           }
+           // Set column to zero
+           for (int i = 0; i < n; i++) {
+               matrix[i][y] = 0;
+           }
+       }
+   }
+}
+
+Time Complexity	    Space Complexity
+   O(m*n) 	              O(k) 
+
+Better Approach
+Using Row and Column Arrays :
+Initialize two arrays, row and col, with -1 to track which rows and columns need to be zeroed. Traverse the matrix once to mark row[i] = 0 and col[j] = 0 wherever grid[i][j] == 0. In a second pass, update the matrix by setting grid[i][j] = 0 if either row[i] or col[j] is 0. 
+
+Java Code -
+
+  class Solution {
+   public void setZeroes(int[][] matrix) {
+       int n = matrix.length;
+       int m = matrix[0].length;
+       int[] row = new int[n];
+       int[] col = new int[m];
+       Arrays.fill(row, -1);
+       Arrays.fill(col, -1);
+       // Mark the rows and columns that should be set to zero
+       for (int i = 0; i < n; i++) {
+           for (int j = 0; j < m; j++) {
+               if (matrix[i][j] == 0) {
+                   row[i] = 0;
+                   col[j] = 0;
+               }
+           }
+       }
+       // Set corresponding elements to zero
+       for (int i = 0; i < n; i++) {
+           for (int j = 0; j < m; j++) {
+               if ((row[i] == 0 || col[j] == 0) && matrix[i][j] != 0) {
+                   matrix[i][j] = 0;
+               }
+           }
+       }
+   }
+}
+
+Time Complexity	         Space Complexity
+   O(m*n)	                    O(m+n) 
+
+
+Best Approach
+Using the First Row and First Column as Markers :
+We use the first row and first column as markers to track which rows and columns need to be set to zero. While traversing the matrix, if an element is 0, we mark its row and column. In a second pass, we update the matrix based on these markers, ensuring an in-place solution with O(1) extra space. 
+
+Java Code - 
+
+  class Solution {
+   public void setZeroes(int[][] matrix) {
+       int n = matrix.length;
+       int m = matrix[0].length;
+       boolean col = false;
+       for (int i = 0; i < n; i++) {
+           if (matrix[i][0] == 0)
+               col = true;
+           for (int j = 1; j < m; j++) {
+               if (matrix[i][j] == 0) {
+                   matrix[i][0] = 0;
+                   matrix[0][j] = 0;
+               }
+           }
+       }
+       for (int i = n - 1; i >= 0; i--) {
+           for (int j = m - 1; j >= 1; j--) {
+               if (matrix[i][0] == 0 || matrix[0][j] == 0)
+                   matrix[i][j] = 0;
+           }
+           if (col)
+           matrix[i][0] = 0;
+       }
+   }
+}
+
+
+Time Complexity	        Space Complexity
+    O(m * n)	              O(1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
