@@ -1,0 +1,62 @@
+Problem Statement
+
+Given an integer array nums, return an array answer such that:
+answer[i] is equal to the product of all elements of nums except nums[i]
+You must not use division
+Solve it in O(n) time
+
+🧪 Example
+Input:
+nums = [1,2,3,4]
+Output:
+[24,12,8,6]
+
+💡 Intuition
+Instead of computing product for each index separately (which would be O(n²)), we use:
+Prefix product → product of elements before index i
+Suffix product → product of elements after index i
+Then:
+answer[i] = prefix[i] * suffix[i]
+⚡ Optimized Approach (O(1) Extra Space)
+We avoid extra arrays by:
+First pass → store prefix products in result
+Second pass → multiply with suffix while traversing from right
+
+
+💻 Code (Java)
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int n = nums.length;
+        int[] ans = new int[n];
+
+        // prefix
+        ans[0] = 1;
+        for(int i = 1; i < n; i++){
+            ans[i] = ans[i-1] * nums[i-1];
+        }
+
+        // suffix
+        int suffix = 1;
+        for(int i = n-1; i >= 0; i--){
+            ans[i] = ans[i] * suffix;
+            suffix *= nums[i];
+        }
+
+        return ans;
+    }
+}
+⏱ Complexity
+
+Time: O(n)
+
+Space: O(1) (excluding output array)
+
+
+
+🔥 Edge Cases
+
+Contains zero → handled automatically
+
+All elements same → works fine
+
+Negative numbers → works correctly
